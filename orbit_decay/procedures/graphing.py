@@ -1,8 +1,8 @@
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
-import numpy as np
 from orbit_decay.iterative_method import rk4
 from orbit_decay.procedures.getting import get_trajectory, get_planet_layers
+from linear_algebra import sum_vectors
 
 def graph_oscilation(r_0,t_0,R_p,h,epsilon,time_step_max,func_constants):
     xpoints, ypoints ,upoints, vpoints,Tpoints=get_trajectory(r_0,t_0,R_p,h,epsilon,time_step_max,func_constants)
@@ -18,17 +18,18 @@ def graph_oscilation(r_0,t_0,R_p,h,epsilon,time_step_max,func_constants):
 ######################################################### 
 def update_path(frame,x,y,Tpoints,Tpoints_copy,r,h,func_constants,graph,R_p,epsilon,time_step_max,time_counter,speed):
     R=(float(r[0])**2+float(r[1])**2)**0.5; t=Tpoints[-1]
-    if (abs(R-R_p)>=epsilon and t<time_step_max):        
-        r += rk4(r, t, h,func_constants)
+    if (abs(R-R_p)>=epsilon and t<time_step_max):    
+        r[:] = sum_vectors(r,rk4(r, t, h,func_constants))
         Tpoints_copy.append(t) # One step in time before
         t=t+h
         Tpoints.append(t) # Current time step
         # updating the data
         x.append(r[0]); y.append(r[1])
-        if np.abs(time_counter+speed-Tpoints[-1])>=np.abs(time_counter+speed-Tpoints_copy[-1]): # if Current time step increase the distance to next time_counter then One step in time before reached minimum distance
+        if abs(time_counter+speed-Tpoints[-1])>=abs(time_counter+speed-Tpoints_copy[-1]): # if Current time step increase the distance to next time_counter then One step in time before reached minimum distance
             time_counter=time_counter+speed
             graph.set_xdata(x)
             graph.set_ydata(y)
+            
 
 # h: power of 10
 # Recommended h<speed
@@ -40,7 +41,7 @@ def graph_path(x_0,y_0,v_x0,v_y0,t_0,speed,planet_Radius,h,func_constants,epsilo
         rate=1/speed*1000
     else: rate=200
     ###################################
-    x=[x_0];  y=[y_0]; Tpoints=[t_0]; Tpoints_copy=[]; r= np.array([x_0,y_0,v_x0,v_y0], float); time_counter=0
+    x=[x_0];  y=[y_0]; Tpoints=[t_0]; Tpoints_copy=[]; r= [x_0,y_0,v_x0,v_y0]; time_counter=0
     fig, ax = plt.subplots()
     graph = ax.plot(x,y,color = 'steelblue')[0]
     R_0=(float(r[0])**2+float(r[1])**2)**0.5
@@ -80,7 +81,7 @@ def graph_trajectory(x_0,y_0,v_x0,v_y0,t_0,planet_Radius,h,epsilon,time_step_max
     # plt.ylim(-12*10**6, 12*10**6)
     # plt.xlim(-2.7*R_p, 2.7*R_p)
     # plt.ylim(-1.8*R_p, 1.8*R_p)
-    r_0 = np.array([x_0,y_0,v_x0,v_y0], float) #(x_0, y_0, v_{x_0}, v_{y_0})
+    r_0 = [x_0,y_0,v_x0,v_y0] #(x_0, y_0, v_{x_0}, v_{y_0})
     R_0=(float(r_0[0])**2+float(r_0[1])**2)**0.5
     plt.xlim(-2*R_0, 2*R_0); plt.ylim(-2*R_0, 2*R_0); plt.xlabel("x(t) (m)"); plt.ylabel("y(t) (m)")    
     xpoints, ypoints ,upoints, vpoints,Tpoints=get_trajectory(r_0,t_0,R_p,h,epsilon,time_step_max,func_constants)
