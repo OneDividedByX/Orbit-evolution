@@ -1,6 +1,6 @@
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
-from orbit_decay.iterative_method import rk4
+from iterative_method import rk4
 from orbit_decay.procedures.getting import get_trajectory, get_planet_layers
 from linear_algebra import sum_vectors
 
@@ -45,10 +45,6 @@ def graph_path(x_0,y_0,v_x0,v_y0,t_0,speed,planet_Radius,h,func_constants,epsilo
     fig, ax = plt.subplots()
     graph = ax.plot(x,y,color = 'steelblue')[0]
     R_0=(float(r[0])**2+float(r[1])**2)**0.5
-    # plt.xlim(-18*10**6, 18*10**6)
-    # plt.ylim(-12*10**6, 12*10**6)
-    # plt.xlim(-2.7*R_p, 2.7*R_p)
-    # plt.ylim(-1.8*R_p, 1.8*R_p)
     plt.xlim(-2*R_0, 2*R_0)
     plt.ylim(-2*R_0, 2*R_0)
     plt.xlabel("x(t) (m)")
@@ -77,10 +73,6 @@ def graph_trajectory(x_0,y_0,v_x0,v_y0,t_0,planet_Radius,h,epsilon,time_step_max
     fig, ax = plt.subplots()
     ax.add_patch(c0); ax.add_patch(c1); ax.add_patch(c2); ax.add_patch(c3); ax.add_patch(c4)
     plt.grid()
-    # plt.xlim(-18*10**6, 18*10**6)
-    # plt.ylim(-12*10**6, 12*10**6)
-    # plt.xlim(-2.7*R_p, 2.7*R_p)
-    # plt.ylim(-1.8*R_p, 1.8*R_p)
     r_0 = [x_0,y_0,v_x0,v_y0] #(x_0, y_0, v_{x_0}, v_{y_0})
     R_0=(float(r_0[0])**2+float(r_0[1])**2)**0.5
     plt.xlim(-2*R_0, 2*R_0); plt.ylim(-2*R_0, 2*R_0); plt.xlabel("x(t) (m)"); plt.ylabel("y(t) (m)")    

@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from orbit_decay.iterative_method import rk4
+from iterative_method import rk4
 from linear_algebra import sum_vectors
 
 def get_last_path_step(r_0,t_0,R_p,h,epsilon,time_step_max,func_constants):

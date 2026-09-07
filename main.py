@@ -1,4 +1,4 @@
-import orbit_decay.graph as graph
+import orbit_decay.graphics as graphics
 
 epsilon=100.0; time_step_max=1000000
 
@@ -23,10 +23,12 @@ h=10
 t_0=0.0
 
 # x_0,y_0,v_x0,v_y0=384400000,0, 0,1000  # moon
-x_0,y_0,v_x0,v_y0=R_p+400000, 0, 0,8000  # ISS
+x_0,y_0,v_x0,v_y0=R_p+400000, 0, 0,10000  # ISS
 r_0 = [x_0,y_0,v_x0,v_y0] #(x_0, y_0, v_{x_0}, v_{y_0})
 v=(v_x0**2+v_y0**2)**0.5
 
 planet_Radius = (R_core_inner,R_core_outer,R_suffer_mantle,R_rigid_mantle,R_p)
-graph.trajectory(x_0,y_0,v_x0,v_y0,t_0,planet_Radius,h,epsilon,time_step_max,func_constants)
-graph.path(x_0,y_0,v_x0,v_y0,t_0,100,planet_Radius,h,func_constants,epsilon,time_step_max)
+# graph.trajectory(x_0,y_0,v_x0,v_y0,t_0,planet_Radius,h,epsilon,time_step_max,func_constants)
+
+
+graphics.path(x_0,y_0,v_x0,v_y0,t_0,100,planet_Radius,h,func_constants,epsilon,time_step_max)

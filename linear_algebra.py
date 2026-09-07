@@ -18,10 +18,10 @@ def getNormal_vector(vector: tuple[float, float]):
     """Get a normal vector (perpendicular) to the given vector."""
     return (-vector[1], vector[0])
 
-def norm_L2(vector: tuple[float, float]):
-    return (vector[0] ** 2 + vector[1] ** 2) ** 0.5
+def norm_L2(vector: list[float]):
+    return (sum(x**2 for x in vector)) ** 0.5
 
-def distance(point1: tuple[float, float], point2: tuple[float, float], norm: str = 'L2'):
+def distance(point1: list[float], point2: list[float], norm: str = 'L2'):
     if norm == 'L2':
         return norm_L2(sum_vectors(point1, mult_scalar(-1, point2)))
     else:
