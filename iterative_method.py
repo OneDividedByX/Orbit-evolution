@@ -33,7 +33,7 @@ class RungeKutta_4:
         """
         self.r_0 = r_0
         self.t_0 = t_0
-        self.func = function
+        self.function = function
         
     def _iteration(self, r: list[float], t: float, h: float):
         """Perform a single iteration of the Runge-Kutta 4th order method."""

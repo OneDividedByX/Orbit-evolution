@@ -14,16 +14,16 @@ def planet_layers(planet_Radius):
     return planet_layers(planet_Radius)
 
 class Universe:
-    bodies = {}
-    def __init__(self):        
-        self.register(self)
+    bodies: dict[str, UniverseBody] = {}
     
+    def __init__(self):        
+        pass   
     @classmethod
     def register(cls, body: UniverseBody):
         cls.bodies[body.name] = body
 
 class UniverseBody(Universe):    
-    def __init__(self, name: str, mass: float, radius: float, position: list[float], velocity: list[float]):
+    def __init__(self, name: str, mass: float, radius: float, position: list[float], velocity: list[float], color: str = "b"):
         """Create a new UniverseBody object.
 
         Args:
@@ -32,18 +32,20 @@ class UniverseBody(Universe):
             radius (float): The radius of the body (m).
             position (list[float]): The initial position of the body (m).
             velocity (list[float]): The initial velocity of the body (m/s).
+            color (str): The color of the body for plotting purposes.
         """
         self.name = name
         self.mass = mass
         self.radius = radius
         self.initial_position = position
         self.initial_velocity = velocity
+        self.color = color
 
         self.list_position = [self.initial_position]
         self.list_velocity = [self.initial_velocity]
         self.list_time = [0.0]
         
-        super().__init__()
+        super().register(self)
 
     def update_position(self, new_position: list[float]):
         """Update the position of the body."""
@@ -74,7 +76,7 @@ class UniverseInteraction:
 
         Args:
             body1 (UniverseBody): The central body in the interaction.
-            body2 (UniverseBody): The objective body in the interaction wich the central body interacts with.
+            body2 (UniverseBody): The objective body in the interaction which the central body interacts with.
         """
         self.body1 = body1
         self.body2 = body2
@@ -133,18 +135,20 @@ class UniverseInteraction:
         if numerical_method == "RK4":
             method  = RungeKutta_4(OrbitDecay_ODE_Function, r , t)
         tolerance_distance = self.body1.radius
+        
         if time_delay <= 0.0:
             while True:
-                r[:] = method._iteration(r, t, delta_time)
+                r[:] = sum_vectors(r, method._iteration(r, t, delta_time))
                 t += delta_time
-                if distance(r, self.body1.current_position) < tolerance_distance:
+                print(r,t)
+                if distance([r[0], r[1]], self.body1.current_position) < tolerance_distance:
                     break
-                yield r, t
+                yield r[0], r[1]
         else:
             while True:
-                r[:] = method._iteration(r, t, delta_time)
+                r[:] = sum_vectors(r, method._iteration(r, t, delta_time))
                 t += delta_time
-                if distance(r, self.body1.current_position) < tolerance_distance:
+                if distance([r[0], r[1]], self.body1.current_position) < tolerance_distance:
                     break
-                yield r, t
+                yield r[0], r[1]
                 time.sleep(time_delay)

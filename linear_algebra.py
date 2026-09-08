@@ -1,13 +1,13 @@
 from math import cos, sin
 
 def sum_vectors(vector1: list[float], vector2: list[float]):
-    return [vector1[0] + vector2[0], vector1[1] + vector2[1], vector1[2] + vector2[2], vector1[3] + vector2[3]]
+    return [vector1[i] + vector2[i] for i in range(len(vector1))]
 
 def mult_scalar(scalar: float, vector: list[float]):
-    return [scalar * vector[0], scalar * vector[1], scalar * vector[2], scalar * vector[3]]
+    return [scalar * vector[i] for i in range(len(vector))]
 
 def dot_product(vector1: tuple[float, float], vector2: tuple[float, float]):
-    return vector1[0] * vector2[0] + vector1[1] * vector2[1]
+    return sum(x * y for x, y in zip(vector1, vector2))
 
 def rotate_vector(vector: tuple[float, float], angle: float):
     """Rotate a vector by a given angle in radians."""    
