@@ -18,7 +18,10 @@ FLUID_DENSITY=7*10**-7
 MASS_SATELLITE=419725 # ISS
 
 def OrbitDecay_ODE_Function(r: list[float], t: float):
-    """Function representing the system of ordinary differential equations for orbit decay due to gravitational and drag forces."""
+    """Function representing the system of ordinary differential equations for orbit decay due to gravitational and drag forces.
+    Args:
+        r (list[float]): The current values of the dependent variables [x, y, u, v], where x and y are the position coordinates and u and v are the velocity components.
+        t (float): The current value of the independent variable (time)."""
     alpha = MASS_CENTRAL_BODY*GRAVITATIONAL_CONSTANT
     beta = (DRAG_COEFFICIENT*SURFACE_AREA_SATELLITE*FLUID_DENSITY)/MASS_SATELLITE  #10^-14
     x, y, u, v = r[0], r[1],r[2],r[3]

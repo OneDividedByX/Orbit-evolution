@@ -1,9 +1,19 @@
 from math import cos, sin
 
 def sum_vectors(vector1: list[float], vector2: list[float]):
+    """Sum two vectors.
+    Args:
+        vector1 (list[float]): The first vector.
+        vector2 (list[float]): The second vector.
+    """
     return [vector1[i] + vector2[i] for i in range(len(vector1))]
 
 def mult_scalar(scalar: float, vector: list[float]):
+    """Multiply a vector by a scalar.
+    Args:
+        scalar (float): The scalar to multiply by.
+        vector (list[float]): The vector to multiply.
+    """
     return [scalar * vector[i] for i in range(len(vector))]
 
 def dot_product(vector1: tuple[float, float], vector2: tuple[float, float]):

@@ -2,6 +2,12 @@ from linear_algebra import sum_vectors, mult_scalar
 from typing import Callable
 
 def method_RK4(function: Callable[[list[float], float], list[float]], r_0: list[float], t_0: float):
+    """Create a RungeKutta_4 object.
+    Args:
+        function (Callable[[list[float], float], list[float]]): The function _f_ representing the system of differential equations _f(r, t)=0_, _r = r(t)_.
+        r_0 (list[float]): The initial values of the dependent variables.
+        t_0 (float): The initial value of the independent variable.
+    """
     return RungeKutta_4(function, r_0, t_0)
 
 ODE_METHOD = {'RK4': method_RK4}
@@ -20,7 +26,12 @@ class RungeKutta_4:
         self.function = function
         
     def _iteration(self, r: list[float], t: float, h: float):
-        """Perform a single iteration of the Runge-Kutta 4th order method."""
+        """Perform a single iteration of the Runge-Kutta 4th order method.
+        Args:
+            r (list[float]): The current values of the dependent variables.
+            t (float): The current value of the independent variable.
+            h (float): The step size of the independent variable for the numerical integration.
+        """
         k1 = mult_scalar(h, self.function(r, t))
         k2 = mult_scalar(h, self.function(sum_vectors(r, mult_scalar(0.5, k1)), t + 0.5 * h))
         k3 = mult_scalar(h, self.function(sum_vectors(r, mult_scalar(0.5, k2)), t + 0.5 * h))

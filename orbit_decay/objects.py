@@ -41,11 +41,17 @@ class UniverseBody:
         universe.register(self)
 
     def update_position(self, new_position: list[float]):
-        """Update the position of the body."""
+        """Update the position of the body.
+        Args:
+            new_position (list[float]): The new position of the body.
+        """
         self.list_position.append(new_position)
 
     def update_velocity(self, new_velocity: list[float]):
-        """Update the velocity of the body."""
+        """Update the velocity of the body.
+        Args:
+            new_velocity (list[float]): The new velocity of the body.
+        """
         self.list_velocity.append(new_velocity)
     
     @property
