@@ -53,6 +53,9 @@ class GraphUniverse:
             self._update_positions(body2, x_data, y_data, line)
             return line,
         def initial():
+            R_0=body1.radius
+            plt.xlim(-2*R_0, 2*R_0)
+            plt.ylim(-2*R_0, 2*R_0)
             self.plot_initial(fig, ax)
             return line,
         
