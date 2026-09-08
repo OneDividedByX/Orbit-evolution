@@ -1,32 +1,23 @@
 from time import time
-from orbit_decay.procedures.getting import *
-from orbit_decay.constants import *
+from orbit_decay.constants import OrbitDecay_ODE_Function
 from iterative_method import RungeKutta_4
-from linear_algebra import distance
-
-def last_path_step(r_0,t_0,R_p,h,epsilon,time_step_max,func_constants):
-    return get_last_path_step(r_0,t_0,R_p,h,epsilon,time_step_max,func_constants)
-
-def trajectory(r_0,t_0,R_p,h,epsilon,time_step_max,func_constants):
-    return get_trajectory(r_0,t_0,R_p,h,epsilon,time_step_max,func_constants)
-
-def planet_layers(planet_Radius):
-    return planet_layers(planet_Radius)
+from linear_algebra import distance, sum_vectors
 
 class Universe:
     bodies: dict[str, UniverseBody] = {}
     
-    def __init__(self):        
-        pass   
+    def __init__(self, name: str):        
+        self.name = name
     @classmethod
     def register(cls, body: UniverseBody):
         cls.bodies[body.name] = body
 
-class UniverseBody(Universe):    
-    def __init__(self, name: str, mass: float, radius: float, position: list[float], velocity: list[float], color: str = "b"):
+class UniverseBody:    
+    def __init__(self, universe: Universe, name: str, mass: float, radius: float, position: list[float], velocity: list[float], color: str = "b"):
         """Create a new UniverseBody object.
 
         Args:
+            universe (Universe): The universe to which the body belongs.
             name (str): The name of the body.
             mass (float): The mass of the body in kilograms.
             radius (float): The radius of the body (m).
@@ -34,6 +25,8 @@ class UniverseBody(Universe):
             velocity (list[float]): The initial velocity of the body (m/s).
             color (str): The color of the body for plotting purposes.
         """
+        
+        self.universe = universe
         self.name = name
         self.mass = mass
         self.radius = radius
@@ -45,7 +38,7 @@ class UniverseBody(Universe):
         self.list_velocity = [self.initial_velocity]
         self.list_time = [0.0]
         
-        super().register(self)
+        universe.register(self)
 
     def update_position(self, new_position: list[float]):
         """Update the position of the body."""
@@ -140,7 +133,6 @@ class UniverseInteraction:
             while True:
                 r[:] = sum_vectors(r, method._iteration(r, t, delta_time))
                 t += delta_time
-                print(r,t)
                 if distance([r[0], r[1]], self.body1.current_position) < tolerance_distance:
                     break
                 yield r[0], r[1]

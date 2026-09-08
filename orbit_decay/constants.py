@@ -1,4 +1,3 @@
-
 # kg
 MASS_CENTRAL_BODY=5.972*10**24
 
