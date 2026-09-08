@@ -1,21 +1,45 @@
-from time import time
-from orbit_decay.constants import OrbitDecay_ODE_Function
-from iterative_method import ODE_METHOD, RungeKutta_4
+from orbit_decay.physics import OrbitDecay_ODE_Function
+from iterative_method import ODE_METHOD
 from linear_algebra import distance, sum_vectors
+from typing import Callable
+
+GRAVITATIONAL_CONSTANT=6.673*10**(-11)
 
 class Universe:
     bodies: dict[str, UniverseBody] = {}
     
-    def __init__(self, name: str):        
+    def __init__(self, name: str, gravity_constant = GRAVITATIONAL_CONSTANT):
+        """Create a new Universe object.
+        Args:
+            name (str): The name of the universe.
+            gravity_constant (float): The gravitational constant. Determines the strength of the gravitational force between bodies.
+        """
         self.name = name
+        self.gravity_constant = gravity_constant
+        
     @classmethod
     def register(cls, body: UniverseBody):
+        """Register a new body in the universe.
+        Args:
+            body (UniverseBody): The body to register.
+        """
         cls.bodies[body.name] = body
 
+    def OrbitDecay_ODE_Function(self, mass_central_body: float, mass_satellite: float, surface_area_satellite: float, env_drag_coefficient: float, env_fluid_density: float):
+        """Function representing the system of ordinary differential equations for orbit decay due to gravitational and drag forces.
+        Args:
+            mass_central_body (float): The mass of the central body in kilograms.
+            mass_satellite (float): The mass of the satellite in kilograms.
+            surface_area_satellite (float): The surface area of the satellite in square meters.
+            env_drag_coefficient (float): The drag coefficient of the satellite.
+            env_fluid_density (float): The density of the fluid through which the satellite is moving.
+        """
+        f : Callable[[list[float], float], list[float]] = lambda  r, t: OrbitDecay_ODE_Function(r, t, self.gravity_constant, mass_central_body, mass_satellite, surface_area_satellite, env_drag_coefficient, env_fluid_density)
+        return f
+    
 class UniverseBody:    
-    def __init__(self, universe: Universe, name: str, mass: float, radius: float, position: list[float], velocity: list[float], color: str = "b"):
+    def __init__(self, universe: Universe, name: str, mass: float, radius: float, position: list[float], velocity: list[float], color: str = "b", surface_area = 1.0, atmospheric_drag_coefficient = 1.0, atmospheric_density=1.0):
         """Create a new UniverseBody object.
-
         Args:
             universe (Universe): The universe to which the body belongs.
             name (str): The name of the body.
@@ -24,6 +48,9 @@ class UniverseBody:
             position (list[float]): The initial position of the body (m).
             velocity (list[float]): The initial velocity of the body (m/s).
             color (str): The color of the body for plotting purposes.
+            surface_area (float): The surface area of the body (m^2).
+            atmospheric_drag_coefficient (float): The drag coefficient of the body.
+            atmospheric_density (float): The density of the atmosphere through which the body is moving (kg/m^3).            
         """
         
         self.universe = universe
@@ -32,6 +59,9 @@ class UniverseBody:
         self.radius = radius
         self.initial_position = position
         self.initial_velocity = velocity
+        self.surface_area = surface_area
+        self.atmospheric_drag_coefficient = atmospheric_drag_coefficient
+        self.atmospheric_density = atmospheric_density
         self.color = color
 
         self.list_position = [self.initial_position]
@@ -72,7 +102,6 @@ class UniverseBody:
 class UniverseInteraction:
     def __init__(self, body1: UniverseBody, body2: UniverseBody):
         """Create a new UniverseInteraction object.
-
         Args:
             body1 (UniverseBody): The central body in the interaction.
             body2 (UniverseBody): The objective body in the interaction which the central body interacts with.
@@ -82,7 +111,6 @@ class UniverseInteraction:
 
     def trajectory_BySteps(self, delta_time: float, n_time_steps: float, tolerance_distance: float , numerical_method = "RK4"):
         """Calculate the trajectory (list of tuples) of _body2_ around _body1_ using a numerical method to solve the system of differential equations associated with the trajectory.
-
         Args:
             delta_time (float): The time difference between each step in the simulation. The smaller the value, the more accurate the simulation will be but more calculations will be required.
             n_time_steps (float): The number of time steps (using delta_time) for the simulation.
@@ -93,14 +121,14 @@ class UniverseInteraction:
         t = self.body2.current_time
         
         method_builder = ODE_METHOD[numerical_method]
-        method = method_builder(OrbitDecay_ODE_Function, r, t)
+        ode_function = self.body2.universe.OrbitDecay_ODE_Function(self.body1.mass, self.body2.mass, self.body2.surface_area, self.body2.atmospheric_drag_coefficient, self.body1.atmospheric_density)
+        method = method_builder(ode_function, r, t)
         
         _ , values = method.List_solve_BySteps(n_time_steps, delta_time)    
         return values
     
     def trajectory_ForFinalValue(self, t_final: float, n_subdivisions: int, tolerance_distance: float , numerical_method = "RK4"):
         """Calculate the trajectory (list of tuples) of _body2_ around _body1_ using a numerical method to solve the system of differential equations associated with the trajectory.
-
         Args:
             t_final (float): The final time for the simulation.
             n_subdivisions (int): The number of subdivisions for the simulation. The more subdivisions, the more accurate the solution will be but more calculations will be required.
@@ -111,7 +139,8 @@ class UniverseInteraction:
         t = self.body2.current_time
         
         method_builder = ODE_METHOD[numerical_method]
-        method = method_builder(OrbitDecay_ODE_Function, r, t)
+        ode_function = self.body2.universe.OrbitDecay_ODE_Function(self.body1.mass, self.body2.mass, self.body2.surface_area, self.body2.atmospheric_drag_coefficient, self.body1.atmospheric_density)
+        method = method_builder(ode_function, r, t)
         
         _ , values = method.List_solve_ForFinalValue(t_final, n_subdivisions)    
         return values
@@ -127,7 +156,8 @@ class UniverseInteraction:
         r = self.body2.current_position + self.body2.current_velocity
         t = self.body2.current_time
         method_builder = ODE_METHOD[numerical_method]
-        method = method_builder(OrbitDecay_ODE_Function, r , t)
+        ode_function = self.body2.universe.OrbitDecay_ODE_Function(self.body1.mass, self.body2.mass, self.body2.surface_area, self.body2.atmospheric_drag_coefficient, self.body1.atmospheric_density)
+        method = method_builder(ode_function, r , t)
         
         tolerance_distance = self.body1.radius
         
@@ -139,6 +169,7 @@ class UniverseInteraction:
                     break
                 yield r[0], r[1]
         else:
+            from time import time
             while True:
                 r[:] = sum_vectors(r, method._iteration(r, t, delta_time))
                 t += delta_time
