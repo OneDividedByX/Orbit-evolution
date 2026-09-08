@@ -16,7 +16,7 @@ class RungeKutta_4:
     def __init__(self, function: Callable[[list[float], float], list[float]], r_0: list[float], t_0: float):
         """Numerical method for solving ordinary differential equations using the Runge-Kutta 4th order method.
         Args:
-            function (Callable[[list[float], float], list[float]]): The function _f_ representing the system of differential equations _f(r, t)=0_, _r = r(t)_.
+            function (Callable[[list[float], float], list[float]]): The function _f_ representing the system of differential equations _r' = f(r, t)_, _r = r(t)_.
             r_0 (list[float]): The initial values of the dependent variables.
             t_0 (float): The initial value of the independent variable.
             h (float): The step size of the independent variable for the numerical integration.
