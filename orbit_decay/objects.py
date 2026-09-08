@@ -83,14 +83,11 @@ class UniverseInteraction:
             tolerance_distance (float): The tolerance for the distance between _body2_ and _body1_. The simulation will stop when the distance between _body2_ and _body1_ is less than this value. It intends to avoid the simulation to continue when _body2_ is "already inside" _body1_.
             numerical_method (RungeKutta_4 | ...): The numerical method to use for the simulation.
         """
-        x = self.body2.current_position[0]
-        y = self.body2.current_position[1]
-        vx = self.body2.current_velocity[0]
-        vy = self.body2.current_velocity[1]
+        r = self.body2.current_position + self.body2.current_velocity
         t = self.body2.current_time
         
-        if numerical_method == "RK4":
-            method  = RungeKutta_4(OrbitDecay_ODE_Function, [x,y,vx,vy], t)
+        method_builder = ODE_METHOD[numerical_method]
+        method = method_builder(OrbitDecay_ODE_Function, r, t)
         
         _ , values = method.List_solve_BySteps(n_time_steps, delta_time)    
         return values
@@ -104,21 +101,17 @@ class UniverseInteraction:
             tolerance_distance (float): The tolerance for the distance between _body2_ and _body1_. The simulation will stop when the distance between _body2_ and _body1_ is less than this value. It intends to avoid the simulation to continue when _body2_ is "already inside" _body1_.
             numerical_method (RungeKutta_4 | ...): The numerical method to use for the simulation.
         """
-        x = self.body2.current_position[0]
-        y = self.body2.current_position[1]
-        vx = self.body2.current_velocity[0]
-        vy = self.body2.current_velocity[1]
+        r = self.body2.current_position + self.body2.current_velocity
         t = self.body2.current_time
         
-        if numerical_method == "RK4":
-            method  = RungeKutta_4(OrbitDecay_ODE_Function, [x,y,vx,vy], t)
+        method_builder = ODE_METHOD[numerical_method]
+        method = method_builder(OrbitDecay_ODE_Function, r, t)
         
         _ , values = method.List_solve_ForFinalValue(t_final, n_subdivisions)    
         return values
         
     def trajectory_Loop(self, delta_time: float, numerical_method = "RK4", time_delay: float = 0.0):
-        """Loop through the trajectory (iterating indefinitely) of _body2_ around _body1_ using a numerical method to solve the system of differential equations associated with the trajectory.
-        
+        """Loop through the trajectory (iterating indefinitely) of _body2_ around _body1_ using a numerical method to solve the system of differential equations associated with the trajectory.        
         Args:
             delta_time (float): The time difference between each step in the simulation. The smaller the value, the more accurate the simulation will be but more calculations will be required.
             numerical_method (RungeKutta_4 | ...): The numerical method to use for the simulation.
@@ -129,6 +122,7 @@ class UniverseInteraction:
         t = self.body2.current_time
         method_builder = ODE_METHOD[numerical_method]
         method = method_builder(OrbitDecay_ODE_Function, r , t)
+        
         tolerance_distance = self.body1.radius
         
         if time_delay <= 0.0:
