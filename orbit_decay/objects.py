@@ -1,6 +1,6 @@
 from time import time
 from orbit_decay.constants import OrbitDecay_ODE_Function
-from iterative_method import RungeKutta_4
+from iterative_method import ODE_METHOD, RungeKutta_4
 from linear_algebra import distance, sum_vectors
 
 class Universe:
@@ -122,11 +122,13 @@ class UniverseInteraction:
         Args:
             delta_time (float): The time difference between each step in the simulation. The smaller the value, the more accurate the simulation will be but more calculations will be required.
             numerical_method (RungeKutta_4 | ...): The numerical method to use for the simulation.
-            time_delay (float): The (artificial) time delay between each step in the simulation. For non positive values, the simulation will run as fast as possible. For positive values, the simulation will run with a delay of _time_delay_ seconds between each step."""
+            time_delay (float): The (artificial) time delay between each step in the simulation. For non positive values, the simulation will run as fast as possible. For positive values, the simulation will run with a delay of _time_delay_ seconds between each step.
+        """
+        
         r = self.body2.current_position + self.body2.current_velocity
         t = self.body2.current_time
-        if numerical_method == "RK4":
-            method  = RungeKutta_4(OrbitDecay_ODE_Function, r , t)
+        method_builder = ODE_METHOD[numerical_method]
+        method = method_builder(OrbitDecay_ODE_Function, r , t)
         tolerance_distance = self.body1.radius
         
         if time_delay <= 0.0:

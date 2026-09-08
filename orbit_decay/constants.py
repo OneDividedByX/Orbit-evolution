@@ -4,8 +4,7 @@ MASS_CENTRAL_BODY=5.972*10**24
 # units
 GRAVITATIONAL_CONSTANT=6.673*10**(-11)
 
-# Constantes condicionadas
-
+# Conditionated constants for the orbit decay simulation
 # NO_UNITS
 DRAG_COEFFICIENT=2.2
 

@@ -15,9 +15,8 @@ class GraphUniverse:
                 circle = plt.Circle((body.current_position[0], body.current_position[1]), body.radius, color=body.color, alpha=0.5)
                 ax.add_patch(circle)
             else:
-                plt.plot(body.current_position[0], body.current_position[1], 'o', color=body.color)  # Plot point for bodies with zero radius
+                plt.plot(body.current_position[0], body.current_position[1], 'o', color=body.color)
         
-    
     def _update_positions(self, body: UniverseBody, x_data: float, y_data: float, line: plt.Line2D):
         body.update_position([x_data, y_data])
         line.set_data(zip(*body.list_position))
@@ -38,9 +37,9 @@ class GraphUniverse:
         ani = animation.FuncAnimation(
             fig, 
             update,
-            frames = lambda: interaction.trajectory_Loop(delta_time), # Nuestra función indefinida
+            frames = lambda: interaction.trajectory_Loop(delta_time),
             init_func = initial, 
             blit=False, 
-            interval=1, # Tiempo en milisegundos entre actualizaciones
-            save_count=100 # Evita advertencias de memoria reteniendo los últimos 100 frames
+            interval=1,
+            save_count=100
         )
