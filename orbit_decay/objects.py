@@ -111,7 +111,7 @@ class UniverseInteraction:
         return values
         
     def trajectory_Loop(self, delta_time: float, numerical_method = "RK4", time_delay: float = 0.0):
-        """Loop through the trajectory (iterating indefinitely) of _body2_ around _body1_ using a numerical method to solve the system of differential equations associated with the trajectory.        
+        """Loop through the trajectory (iterating indefinitely) of _body2_ around _body1_ using a numerical method to solve the system of differential equations associated with the trajectory. **THIS METHOD IS A LOOP SO IT DOES NOT RETURN ANYTHING AND IT WILL RUN UNTIL THE SIMULATION IS STOPPED**.      
         Args:
             delta_time (float): The time difference between each step in the simulation. The smaller the value, the more accurate the simulation will be but more calculations will be required.
             numerical_method (RungeKutta_4 | ...): The numerical method to use for the simulation.
