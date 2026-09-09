@@ -4,7 +4,7 @@ from typing import Callable
 def method_RK4(function: Callable[[list[float], float], list[float]], r_0: list[float], t_0: float):
     """Create a RungeKutta_4 object.
     Args:
-        function (Callable[[list[float], float], list[float]]): The function _f_ representing the system of differential equations _f(r, t)=0_, _r = r(t)_.
+        function (Callable[[list[float], float], list[float]]): The function _f_ representing the system of differential equations _r' = f(r, t)_, _r = r(t)_.
         r_0 (list[float]): The initial values of the dependent variables.
         t_0 (float): The initial value of the independent variable.
     """
